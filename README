@@ -1,0 +1,14 @@
+Простая база пословиц:
+
+Установка:
+1. Сделать окружение и активизировать его
+python -m venv venv
+venv/Scripts/activate
+2. Сделать миграцию
+python manage.py makemigrations catalogs
+python manage.py migrate
+3. Сделать админа
+python manage.py createsuperuser
+4. Запустить
+5. Cоздать в корне папку media
+6. Зайти под админом http://127.0.0.1:8000/admin/ + Зайти в список http://127.0.0.1:8000/catalogs/ и кнопка Load Data загрузить файл catalog.json в корне.
