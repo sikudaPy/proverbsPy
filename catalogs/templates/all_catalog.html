@@ -1,62 +1,72 @@
 {% extends "master.html" %}
 
 {% block content %}  
-<div id="catalog_index" class="m-3">
-  <h4>Каталог пословиц</h4>
-  <div class="hstack gap-3 p-2 d-print-none">
-    <a class="btn btn-secondary" role="button" id="btnUpdate" href="?page={{ page_mycatalogs.number }}&filter={{ filter }}">Обновить</a>
-    <input class="form-control me-auto" type="text" onchange="onFilter()" id="findString" placeholder="Фильтр..." value="{{ filter }}">
-    {% if user.is_staff %}
-      <a class="btn btn-secondary" role="button" id="btnExcell" href="UploadJson">Load Data</a>
-    {% endif %}
-    <a class="btn btn-secondary" role="button" id="btnExcell" href="saveexcell/?filter={{ filter }}">Save Excell</a>
+<!-- div id="catalog_index" class="m-3" -->
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary  d-print-none">
+  <div class="container-fluid">
+    <a class="navbar-brand" role="button" id="btnUpdate" href="?per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.number }}&filter={{ filter }}">Каталог пословиц</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse md-10" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item">
+          <a class="nav-link disabled" aria-disabled="true"> </a>
+        </li>
+      </ul>
+      <input class="form-control me-2" type="text" onchange="onFilter()" id="findString" placeholder="Фильтр..." value="{{ filter }}"/>
+      {% if user.is_staff %}
+        <a class="btn btn-outline-primary me-2" role="button" id="btnExcell" href="#">Настройки</a>
+      {% endif %}  
+      {% if user.is_superuser %}
+        <a class="btn btn-outline-secondary me-2" role="button" id="btnExcell" href="UploadJson">Загрузка...</a>
+      {% endif %}     
+      <a class="btn btn-outline-success" role="button" id="btnExcell" href="saveexcell/?filter={{ filter }}">To_Excell</a>
+    </div>
   </div>
+</nav>
 
-  <table class="table table-striped table-bordered table-striped-columns">
-    <thead>
-      <tr class="align-items-center"> 
-        <th>V</th>
-        <th>Пословица</th>
-        <th class="d-none d-lg-block d-print-block">Комментарий</th>
-        <!-- th class='d-print-none'>Действие</th -->
-      </tr>
-      <tbody class="table-group-divider">
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr class="align-items-center"> 
+      <th class=" d-print-none">V</th>
+      <th>Пословица</th>
+      <th class="d-none d-md-block d-print-block">Комментарий</th>
+    </tr>
+    <tbody class="table-group-divider">
+      {% for x in page_mycatalogs %}
+        <tr>
+            <td class="d-print-none"><input class="form-check-input" type="checkbox" id="inlineCheckbox<?= $key ?>"></td>
+            <td data-bs-toggle="modal" data-bs-target="#itemModal" role="button" onclick="onViewItem('{{x.name}}','{{x.title}}')">{{ x.name }}</td>
+            <td class="d-none d-md-block d-print-block" data-bs-toggle="modal" data-bs-target="#itemModal" role="button" onclick="onViewItem('{{x.name}}','{{x.title}}')">{{ x.title }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+  </thead>
+</table>
 
-        {% for x in page_mycatalogs %}
-          <tr>
-              <td><input class="form-check-input" type="checkbox" id="inlineCheckbox<?= $key ?>"></td>
-              <td data-bs-toggle="modal" data-bs-target="#itemModal" role="button" onclick="onViewItem('{{x.name}}','{{x.title}}')">{{ x.name }}</td>
-              <td class="d-none d-lg-block d-print-block" data-bs-toggle="modal" data-bs-target="#itemModal" role="button" onclick="onViewItem('{{x.name}}','{{x.title}}')">{{ x.title }}</td>
-              <!-- td class='d-print-none'><a class="btn btn-primary btn-sm" href="/catalogs/{{ x.id }}">Просмотр</td -->
-              <!-- td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#itemModal" onclick="onViewItem('{{x.name}}','{{x.title}}')">Просмотр</button></td -->
-          </tr>
-        {% endfor %}
-        </tbody>
-    </thead>
-  </table>
+<nav aria-label="Page navigation" class="d-print-none">
+  <ul class="pagination justify-content-center">
+    {% if page_mycatalogs.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page=1&filter={{ filter }}">&lt&lt</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_mycatalogs.previous_page_number }}&filter={{ filter }}">&lt</a></li>
+    {% else %}  
+      <li class="page-item disabled"><a class="page-link">&lt&lt</a></li>
+      <li class="page-item  disabled"><a class="page-link"">&lt</a></li>
+    {% endif %}
+    <li class="page-item  disabled"><a class="page-link" >Cтраница: {{ page_mycatalogs.number }} / {{ page_mycatalogs.paginator.num_pages }}</a></li>
+    {% if page_mycatalogs.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_mycatalogs.next_page_number }}&filter={{ filter }}">&gt</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_mycatalogs.paginator.num_pages }}&filter={{ filter }}">&gt&gt</a></li>
+    {% else %}  
+      <li class="page-item disabled"><a class="page-link">&gt</a></li>
+      <li class="page-item  disabled"><a class="page-link"">&gt&gt</a></li>  
+    {% endif %}
+  </ul>
+</nav>
 
-  <nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-      {% if page_mycatalogs.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page=1&filter={{ filter }}">&lt&lt</a></li>
-        <li class="page-item"><a class="page-link" href="?page={{ page_mycatalogs.previous_page_number }}&filter={{ filter }}">&lt</a></li>
-      {% else %}  
-        <li class="page-item disabled"><a class="page-link">&lt&lt</a></li>
-        <li class="page-item  disabled"><a class="page-link"">&lt</a></li>
-      {% endif %}
-      <li class="page-item  disabled"><a class="page-link" >Cтраница: {{ page_mycatalogs.number }}</a></li>
-      {% if page_mycatalogs.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ page_mycatalogs.next_page_number }}&filter={{ filter }}">&gt</a></li>
-        <li class="page-item"><a class="page-link" href="?page={{ page_mycatalogs.paginator.num_pages }}&filter={{ filter }}">&gt&gt</a></li>
-      {% else %}  
-        <li class="page-item disabled"><a class="page-link">&gt</a></li>
-        <li class="page-item  disabled"><a class="page-link"">&gt&gt</a></li>  
-      {% endif %}
-    </ul>
-  </nav>
-<div>
-
-<!-- The Modal Item -->
+<!-- The Modal Item View -->
 <div class="modal" id="itemModal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -75,6 +85,25 @@
   </div>
 </div>  
 
+<!-- The Modal Settings View -->
+<div class="modal" id="Settings">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Настройки списка пословиц</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="itemModalBody">
+        <h1>-</h1>
+        <p>-</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="text/javascript">
   function onFilter() { 
     var strFind  = document.getElementById("findString").value;
@@ -83,6 +112,7 @@
     var url = window.location.protocol + "//" + window.location.host + window.location.pathname + strFilter;
     window.location.replace(url);
   }
+
   function onViewItem(name="", title=""){ 
     var itemBody  = document.getElementById("itemModalBody")  
     itemBody.innerHTML = "\

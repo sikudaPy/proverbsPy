@@ -23,7 +23,8 @@ def catalogs(request):
   strFilter = str(request.GET.get("filter") or "")
   mycatalog = getCatalogByFilter(strFilter)
 
-  paginator = Paginator(mycatalog, 9)  
+  per_page = request.GET.get("per_page") or 9
+  paginator = Paginator(mycatalog, per_page)  
   page_number = request.GET.get("page") or 1
   page_mycatalogs = paginator.get_page(page_number)
   
@@ -31,7 +32,7 @@ def catalogs(request):
   context = {
     'page_mycatalogs': page_mycatalogs,
     'filter': strFilter,
-    'user': request.user 
+    'user': request.user
   }
   return HttpResponse(template.render(context, request))
 
