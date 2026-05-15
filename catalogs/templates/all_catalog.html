@@ -17,7 +17,7 @@
       </ul>
       <input class="form-control me-2" type="text" onchange="onFilter()" id="findString" placeholder="Фильтр..." value="{{ filter }}"/>
       {% if user.is_staff %}
-        <a class="btn btn-outline-primary me-2" role="button" id="btnExcell" href="#">Настройки</a>
+        <a class="btn btn-outline-primary me-2" role="button" id="btnSettings" data-bs-toggle="modal" data-bs-target="#Settings">Настройки</a>
       {% endif %}  
       {% if user.is_superuser %}
         <a class="btn btn-outline-secondary me-2" role="button" id="btnExcell" href="UploadJson">Загрузка...</a>
@@ -49,16 +49,16 @@
 <nav aria-label="Page navigation" class="d-print-none">
   <ul class="pagination justify-content-center">
     {% if page_mycatalogs.has_previous %}
-      <li class="page-item"><a class="page-link" href="?page=1&filter={{ filter }}">&lt&lt</a></li>
-      <li class="page-item"><a class="page-link" href="?page={{ page_mycatalogs.previous_page_number }}&filter={{ filter }}">&lt</a></li>
+      <li class="page-item"><a class="page-link" href="?per_page={{page_mycatalogs.paginator.per_page}}&page=1&filter={{ filter }}">&lt&lt</a></li>
+      <li class="page-item"><a class="page-link" href="?per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.previous_page_number }}&filter={{ filter }}">&lt</a></li>
     {% else %}  
       <li class="page-item disabled"><a class="page-link">&lt&lt</a></li>
       <li class="page-item  disabled"><a class="page-link"">&lt</a></li>
     {% endif %}
     <li class="page-item  disabled"><a class="page-link" >Cтраница: {{ page_mycatalogs.number }} / {{ page_mycatalogs.paginator.num_pages }}</a></li>
     {% if page_mycatalogs.has_next %}
-      <li class="page-item"><a class="page-link" href="?page={{ page_mycatalogs.next_page_number }}&filter={{ filter }}">&gt</a></li>
-      <li class="page-item"><a class="page-link" href="?page={{ page_mycatalogs.paginator.num_pages }}&filter={{ filter }}">&gt&gt</a></li>
+      <li class="page-item"><a class="page-link" href="?per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.next_page_number }}&filter={{ filter }}">&gt</a></li>
+      <li class="page-item"><a class="page-link" href="?per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.paginator.num_pages }}&filter={{ filter }}">&gt&gt</a></li>
     {% else %}  
       <li class="page-item disabled"><a class="page-link">&gt</a></li>
       <li class="page-item  disabled"><a class="page-link"">&gt&gt</a></li>  
@@ -94,10 +94,13 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" id="itemModalBody">
-        <h1>-</h1>
-        <p>-</p>
+        <div class="row g-3 align-items-center">
+          <div class="col-auto"><label for="integerInput" class="form-label">Количество строк на странице</label></div>
+          <div class="col-auto"><input type="number" class="form-control" id="per_page" placeholder="9" min="1" max="100" value="{{page_mycatalogs.paginator.per_page}}" step="1"></div>
+        </div>
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="onSettings()">Установить</button>
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
       </div>
     </div>
@@ -107,7 +110,7 @@
 <script type="text/javascript">
   function onFilter() { 
     var strFind  = document.getElementById("findString").value;
-    var strFilter = "?page={{ page_mycatalogs.number }}&filter="+strFind;
+    var strFilter = "?per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.number }}&filter="+strFind;
     document.getElementById("btnUpdate").href = strFilter;
     var url = window.location.protocol + "//" + window.location.host + window.location.pathname + strFilter;
     window.location.replace(url);
@@ -118,6 +121,15 @@
     itemBody.innerHTML = "\
       <h1>"+name+"</h1> \
       <p>"+title+"</p>";
+  }
+
+  function onSettings(){
+    var strFind  = document.getElementById("findString").value;
+    var per_page = document.getElementById("per_page").value;
+    var strFilter = "?per_page="+per_page+"&page=1&filter="+strFind;
+    document.getElementById("btnUpdate").href = strFilter;
+    var url = window.location.protocol + "//" + window.location.host + window.location.pathname + strFilter;
+    window.location.replace(url);  
   }
 </script>
 {% endblock %}
