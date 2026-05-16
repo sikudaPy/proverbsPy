@@ -4,7 +4,12 @@
 <!-- div id="catalog_index" class="m-3" -->
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary  d-print-none">
-  <div class="container-fluid">
+  <div class="container-fluid gap-4">
+    <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#offcanvasSectionMenu" role="button" aria-controls="offcanvasSectionMenu"> 
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708z"></path>
+      </svg>
+    </a>
     <a class="navbar-brand" role="button" id="btnUpdate" href="?per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.number }}&filter={{ filter }}">Каталог пословиц</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -16,13 +21,13 @@
         </li>
       </ul>
       <input class="form-control me-2" type="text" onchange="onFilter()" id="findString" placeholder="Фильтр..." value="{{ filter }}"/>
-      {% if user.is_staff %}
         <a class="btn btn-outline-primary me-2" role="button" id="btnSettings" data-bs-toggle="modal" data-bs-target="#Settings">Настройки</a>
-      {% endif %}  
       {% if user.is_superuser %}
         <a class="btn btn-outline-secondary me-2" role="button" id="btnExcell" href="UploadJson">Загрузка...</a>
-      {% endif %}     
-      <a class="btn btn-outline-success" role="button" id="btnExcell" href="saveexcell/?filter={{ filter }}">To_Excell</a>
+      {% endif %} 
+      {% if user.is_staff %}    
+        <a class="btn btn-outline-success" role="button" id="btnExcell" href="saveexcell/?filter={{ filter }}">To_Excell</a>
+      {% endif %} 
     </div>
   </div>
 </nav>
