@@ -14,24 +14,26 @@
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body">
-    <ul class="nav nav-pills"> <!-- nav-flush" -->
-        <li class="nav-item">
-            <a href="/catalogs">Раздел пословиц</a>
-        </li>
-        <li>
-
-        </li>
-    </ul>
-    <div class="dropdown mt-3">
-      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-        Выбор темы
-      </button>
-      <ul class="dropdown-menu">
-        <li><a class="dropdown-item bg-light text-dark" onclick="setTheme('light')">Светлая тема</a></li>
-        <li><a class="dropdown-item bg-dark text-white" onclick="setTheme('dark')">Темная тема</a></li>
-        <li><a class="dropdown-item bg-auto text-auto" onclick="setTheme('auto')">Авто тема</a></li>
-      </ul>
-    </div>    
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <a href="/catalogs">Раздел пословиц</a>
+      </li>
+      <li class="list-group-item">
+        <a href="/admin">Администрирование</a>
+      </li>
+      <li class="list-group-item">
+      <div class="dropdown mt-3">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+          Выбор темы
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item bg-light text-dark" onclick="setTheme('light')">Светлая тема</a></li>
+          <li><a class="dropdown-item bg-dark text-white" onclick="setTheme('dark')">Темная тема</a></li>
+          <li><a class="dropdown-item bg-auto text-auto" onclick="setTheme('auto')">Авто тема</a></li>
+        </ul>
+    </div>  
+      </li>
+    </ul>    
   </div>
 </div>
 
