@@ -91,10 +91,18 @@ def SaveExcell(request):
 
 class CatalogAPI(APIView):
     def get(self, request, format=None):
-        #articles = Catalog.objects.all()
+        #Catalog.objects.all()
         strFilter = str(request.GET.get("filter") or "")
-        mycatalog = getCatalogByFilter(strFilter)
-        serializer = CatalogSerializer(mycatalog, many=True)
+        if request.GET.get("page") is None:  
+            page_mycatalogs = getCatalogByFilter(strFilter)
+        else:
+            mycatalog = getCatalogByFilter(strFilter)
+            per_page = request.GET.get("per_page") or 9
+            paginator = Paginator(mycatalog, per_page)  
+            page_number = request.GET.get("page") or 1
+            page_mycatalogs = paginator.get_page(page_number)
+
+        serializer = CatalogSerializer(page_mycatalogs, many=True)
         return Response(serializer.data)
 
     @permission_required('catalogs.can_edit')

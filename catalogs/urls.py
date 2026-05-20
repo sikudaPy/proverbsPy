@@ -8,4 +8,5 @@ urlpatterns = [
     path('catalogs/saveexcell/', views.SaveExcell, name='catalogs'),
     path('catalogs/<int:id>', views.details, name='details'),
     path('catalogs/api', views.CatalogAPI.as_view(), name='article-api'),
+    path('catalogs/api/', views.CatalogAPI.as_view(), name='article-api'),
 ]

@@ -41,10 +41,10 @@
     </tr>
     <tbody class="table-group-divider">
       {% for x in page_mycatalogs %}
-        <tr>
+        <tr role="button" data-bs-toggle="modal" data-bs-target="#itemModal" onclick="onViewItem('{{x.name}}','{{x.title}}')">
             <td class="d-print-none"><input class="form-check-input" type="checkbox" id="inlineCheckbox<?= $key ?>"></td>
-            <td data-bs-toggle="modal" data-bs-target="#itemModal" role="button" onclick="onViewItem('{{x.name}}','{{x.title}}')">{{ x.name }}</td>
-            <td class="d-none d-md-block d-print-block" data-bs-toggle="modal" data-bs-target="#itemModal" role="button" onclick="onViewItem('{{x.name}}','{{x.title}}')">{{ x.title }}</td>
+            <td>{{ x.name }}</td>
+            <td class="d-none d-md-block d-print-block">{{ x.title }}</td>
         </tr>
       {% endfor %}
       </tbody>
