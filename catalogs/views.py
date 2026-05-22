@@ -20,6 +20,8 @@ def main(request):
 
 def catalogs(request):
 
+  theme= request.GET.get("theme") or "auto" 
+
   strFilter = str(request.GET.get("filter") or "")
   mycatalog = getCatalogByFilter(strFilter)
 
@@ -32,7 +34,8 @@ def catalogs(request):
   context = {
     'page_mycatalogs': page_mycatalogs,
     'filter': strFilter,
-    'user': request.user
+    'user': request.user,
+    'theme': theme
   }
   return HttpResponse(template.render(context, request))
 

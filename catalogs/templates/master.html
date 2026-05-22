@@ -1,6 +1,19 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+
+{% if theme == 'auto' %}
+<html data-bs-theme='auto'>
+{% else %}
+  {% if theme == 'light' %}
+  <html data-bs-theme='light'>
+  {% else %}
+    {% if theme == 'dark' %}
+    <html data-bs-theme='dark'>
+    {% else %}
+    <html>
+    {% endif %}
+  {% endif %}
+{% endif %}  
 <head>
   <title>{% block title %}{% endblock %}</title>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
@@ -44,8 +57,12 @@
 <script src="{% static 'bootstrap.bundle.min.js' %}"></script>
 <script>
   function setTheme(nameTheme){
-    const htmlElement = document.documentElement;  
-    htmlElement.setAttribute('data-bs-theme', nameTheme);
+    var strFind  = document.getElementById("findString").value;
+    var per_page = document.getElementById("per_page").value;
+    var strFilter = "?theme="+nameTheme+"&?per_page="+per_page+"&page=1&filter="+strFind;
+    document.getElementById("btnUpdate").href = strFilter;
+    var url = window.location.protocol + "//" + window.location.host + window.location.pathname + strFilter;
+    window.location.replace(url);
   }
 </script> 
 </html>

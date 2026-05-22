@@ -10,7 +10,7 @@
         <path fill-rule="evenodd" d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708z"></path>
       </svg>
     </a>
-    <a class="navbar-brand" role="button" id="btnUpdate" href="?per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.number }}&filter={{ filter }}">Каталог пословиц</a>
+    <a class="navbar-brand" role="button" id="btnUpdate" href="?theme={{theme}}&per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.number }}&filter={{ filter }}">Каталог пословиц</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -54,16 +54,16 @@
 <nav aria-label="Page navigation" class="d-print-none">
   <ul class="pagination justify-content-center">
     {% if page_mycatalogs.has_previous %}
-      <li class="page-item"><a class="page-link" href="?per_page={{page_mycatalogs.paginator.per_page}}&page=1&filter={{ filter }}">&lt&lt</a></li>
-      <li class="page-item"><a class="page-link" href="?per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.previous_page_number }}&filter={{ filter }}">&lt</a></li>
+      <li class="page-item"><a class="page-link" href="?theme={{theme}}&per_page={{page_mycatalogs.paginator.per_page}}&page=1&filter={{ filter }}">&lt&lt</a></li>
+      <li class="page-item"><a class="page-link" href="?theme={{theme}}&per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.previous_page_number }}&filter={{ filter }}">&lt</a></li>
     {% else %}  
       <li class="page-item disabled"><a class="page-link">&lt&lt</a></li>
       <li class="page-item  disabled"><a class="page-link"">&lt</a></li>
     {% endif %}
     <li class="page-item  disabled"><a class="page-link" >Cтраница: {{ page_mycatalogs.number }} / {{ page_mycatalogs.paginator.num_pages }}</a></li>
     {% if page_mycatalogs.has_next %}
-      <li class="page-item"><a class="page-link" href="?per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.next_page_number }}&filter={{ filter }}">&gt</a></li>
-      <li class="page-item"><a class="page-link" href="?per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.paginator.num_pages }}&filter={{ filter }}">&gt&gt</a></li>
+      <li class="page-item"><a class="page-link" href="?theme={{theme}}&per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.next_page_number }}&filter={{ filter }}">&gt</a></li>
+      <li class="page-item"><a class="page-link" href="?theme={{theme}}&per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.paginator.num_pages }}&filter={{ filter }}">&gt&gt</a></li>
     {% else %}  
       <li class="page-item disabled"><a class="page-link">&gt</a></li>
       <li class="page-item  disabled"><a class="page-link"">&gt&gt</a></li>  
@@ -113,9 +113,11 @@
 </div>
 
 <script type="text/javascript">
-  function onFilter() { 
+  function onFilter() {
+  
+    var theme  = document.documentElement.getAttribute('data-bs-theme').value ?? "auto";
     var strFind  = document.getElementById("findString").value;
-    var strFilter = "?per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.number }}&filter="+strFind;
+    var strFilter = "?theme={{theme}}&per_page={{page_mycatalogs.paginator.per_page}}&page={{ page_mycatalogs.number }}&filter="+strFind;
     document.getElementById("btnUpdate").href = strFilter;
     var url = window.location.protocol + "//" + window.location.host + window.location.pathname + strFilter;
     window.location.replace(url);
@@ -129,9 +131,10 @@
   }
 
   function onSettings(){
+    var theme  = document.documentElement.getAttribute('data-bs-theme').value ?? "auto";
     var strFind  = document.getElementById("findString").value;
     var per_page = document.getElementById("per_page").value;
-    var strFilter = "?per_page="+per_page+"&page=1&filter="+strFind;
+    var strFilter = "?theme={{theme}}&per_page="+per_page+"&page=1&filter="+strFind;
     document.getElementById("btnUpdate").href = strFilter;
     var url = window.location.protocol + "//" + window.location.host + window.location.pathname + strFilter;
     window.location.replace(url);  
