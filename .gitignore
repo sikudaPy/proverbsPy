@@ -1,3 +1,6 @@
+build
+dist
+
 catalogs/media/Catalogs.xlsx
 # Django #
 *.log

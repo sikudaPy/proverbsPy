@@ -1,4 +1,5 @@
-import sys, json, requests
+import sys, json
+import requests
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
@@ -57,11 +58,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.table = QtWidgets.QTableView()
 
         url = "https://python1c.ru/catalogs/api?format=json"
-        catalog = requests.get(url)
-        #str_catalog = '[{"id":49,"name":"Богу молись, а к берегу гребись. ","title":"(Пословица означает, что недостаточно того, что ты просишь Высшие Силы тебе помочь в твоем деле, нужно еще и самому прилагать усилия, для успеха в нем.)"}]'
-        self.table.setModel(TableModel(catalog.text))
+        try:
+            catalog = requests.get(url)
+            self.table.setModel(TableModel(catalog.text))
+        except:
+            print("Не могу получить данные https://python1c.ru")
+            str_catalog = '[{"id":49,"name":"Богу молись, а к берегу гребись. ","title":"(Пословица означает, что недостаточно того, что ты просишь Высшие Силы тебе помочь в твоем деле, нужно еще и самому прилагать усилия, для успеха в нем.)"}]'
+            self.table.setModel(TableModel(str_catalog))
+        
         self.setCentralWidget(self.table)
-
         self.table.setAlternatingRowColors(True)
         self.table.resizeColumnToContents(0)
         self.table.setColumnWidth(1, 600)
