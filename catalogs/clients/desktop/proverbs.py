@@ -1,8 +1,9 @@
 import sys, json
-import requests
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
+from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
+from PySide6.QtCore import QUrl
 
 class ItemDialog(QDialog):
     def __init__(self, name, title):
@@ -56,16 +57,34 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__()
         self.setWindowTitle("Пословицы")
         self.table = QtWidgets.QTableView()
+        # Инициализация менеджера сети
+        self.network_manager = QNetworkAccessManager(self)
+        self.start_request()
 
-        url = "https://python1c.ru/catalogs/api?format=json"
-        try:
-            catalog = requests.get(url)
-            self.table.setModel(TableModel(catalog.text))
-        except:
-            print("Не могу получить данные https://python1c.ru")
-            str_catalog = '[{"id":49,"name":"Богу молись, а к берегу гребись. ","title":"(Пословица означает, что недостаточно того, что ты просишь Высшие Силы тебе помочь в твоем деле, нужно еще и самому прилагать усилия, для успеха в нем.)"}]'
-            self.table.setModel(TableModel(str_catalog))
+    def start_request(self):
+              
+        url = QUrl("https://python1c.ru/catalogs/api?format=json")
+        request = QNetworkRequest(url)
         
+        # Отправляем GET запрос
+        self.reply = self.network_manager.get(request)
+        
+        # Подключаем сигнал завершения
+        self.reply.finished.connect(self.handle_response)
+
+    def handle_response(self):
+        if self.reply.error() == QNetworkReply.NetworkError.NoError:
+            # Читаем данные
+            str_catalog = self.reply.readAll().data().decode("utf-8")
+            self.table.setModel(TableModel(str_catalog))
+        else:
+            # Обработка ошибки
+            error_str = self.reply.errorString()
+            str_catalog = '[{"id":49,"name":"Богу молись, а к берегу гребись.","title":"(Пословица означает, "'+error_str+'"}]'
+            self.table.setModel(TableModel(str_catalog))
+            
+        self.reply.deleteLater()
+     
         self.setCentralWidget(self.table)
         self.table.setAlternatingRowColors(True)
         self.table.resizeColumnToContents(0)

@@ -57,12 +57,9 @@
 <script src="{% static 'bootstrap.bundle.min.js' %}"></script>
 <script>
   function setTheme(nameTheme){
-    var strFind  = document.getElementById("findString").value;
-    var per_page = document.getElementById("per_page").value;
-    var strFilter = "?theme="+nameTheme+"&?per_page="+per_page+"&page=1&filter="+strFind;
-    document.getElementById("btnUpdate").href = strFilter;
-    var url = window.location.protocol + "//" + window.location.host + window.location.pathname + strFilter;
-    window.location.replace(url);
+    const url = new URL(window.location.href);
+    url.searchParams.set('theme', nameTheme);
+    window.location.href = url.toString();
   }
 </script> 
 </html>
