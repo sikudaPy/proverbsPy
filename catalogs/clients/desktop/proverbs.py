@@ -1,7 +1,7 @@
 import sys, json
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QWidget, QHBoxLayout,QLineEdit,QMessageBox
 from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 from PySide6.QtCore import QUrl
 
@@ -56,7 +56,24 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Пословицы")
+        self._file_menu = self.menuBar().addMenu("&File")
+
         self.table = QtWidgets.QTableView()
+
+        self.centralwidget = QWidget(self)
+        self.verticalLayout = QVBoxLayout(self.centralwidget)
+        self.findLayout = QHBoxLayout()
+        self.verticalLayout.insertLayout(0, self.findLayout)
+        self.findText = QLineEdit()
+        self.findText.setPlaceholderText(" Find text in table ")
+        self.findLayout.addWidget(self.findText, stretch=100, alignment=Qt.AlignmentFlag.AlignTop|Qt.AlignmentFlag.AlignRight)
+        self.findButton = QPushButton(" Find... ")
+        self.findLayout.addWidget(self.findButton, stretch=10, alignment=Qt.AlignmentFlag.AlignTop|Qt.AlignmentFlag.AlignRight)
+        self.findButton.clicked.connect(self.find)
+
+        self.verticalLayout.addWidget(self.table)
+        self.setCentralWidget(self.centralwidget)
+
         # Инициализация менеджера сети
         self.network_manager = QNetworkAccessManager(self)
         self.start_request()
@@ -85,7 +102,7 @@ class MainWindow(QtWidgets.QMainWindow):
             
         self.reply.deleteLater()
      
-        self.setCentralWidget(self.table)
+        #self.setCentralWidget(self.table)
         self.table.setAlternatingRowColors(True)
         self.table.resizeColumnToContents(0)
         self.table.setColumnWidth(1, 600)
@@ -101,9 +118,19 @@ class MainWindow(QtWidgets.QMainWindow):
         dialog = ItemDialog(name, title)
         dialog.exec()
 
+    # @Slot()
+    def find(self):
+        findString = self.findText.text()
+        dlg = QMessageBox(self)
+        dlg.setWindowTitle(self.tr("Пословицы"))
+        dlg.setText(self.tr("text: '"+findString+"' будет найден"))
+        dlg.exec()
+
+            
+
 app = QtWidgets.QApplication(sys.argv)
 window = MainWindow()
-window.setMinimumWidth(640)
-window.setMinimumHeight(480)
+window.setMinimumWidth(1024)
+window.setMinimumHeight(768)
 window.show()
 app.exec()    
