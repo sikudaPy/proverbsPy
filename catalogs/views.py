@@ -74,7 +74,7 @@ def handle_uploaded_file(f):
         new_object = Catalog(name = elem['name'], title = elem['title'])
         new_object.save()
     file.close()    
-    os.remove(f"{settings.MEDIA_ROOT}/{f.name}")        
+    #os.remove(f"{settings.MEDIA_ROOT}/{f.name}")        
 
 def SaveExcell(request):
     wb = Workbook()
