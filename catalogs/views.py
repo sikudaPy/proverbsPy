@@ -54,7 +54,9 @@ def UploadJson(request):
     else:
         if request.user.is_superuser:
             template = loader.get_template('admin_catalog.html')
-            context = {}
+            context = {
+                'path': f"{settings.MEDIA_ROOT}"
+            }
             return HttpResponse(template.render(context, request))
         else: 
             return redirect("/catalogs/")
