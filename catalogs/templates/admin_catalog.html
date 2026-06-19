@@ -1,5 +1,6 @@
 <form action="/catalogs/UploadJson" method="post" enctype="multipart/form-data">
       {% csrf_token %}
+      <p>{{path}}</p>
       <p ><input type="file" name="file_upload"></p>
       <p ><button type="submit">Загрузить</button></p>
 </form>
