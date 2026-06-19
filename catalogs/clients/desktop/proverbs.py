@@ -1,4 +1,4 @@
-import sys, json
+import sys, json, re
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QWidget, QHBoxLayout,QLineEdit,QMessageBox
@@ -26,9 +26,9 @@ class ItemDialog(QDialog):
         self.close_btn.clicked.connect(self.reject)
 
 class TableModel(QtCore.QAbstractTableModel):
-    def __init__(self, data):
+    def __init__(self, catalogs):
         super().__init__()
-        self.catalogs = json.loads(data)
+        self.catalogs = catalogs    
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
@@ -57,7 +57,7 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__()
         self.setWindowTitle("Пословицы")
         self._file_menu = self.menuBar().addMenu("&File")
-
+        self.catalogs_all = []
         self.table = QtWidgets.QTableView()
 
         self.centralwidget = QWidget(self)
@@ -67,6 +67,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.findText = QLineEdit()
         self.findText.setPlaceholderText(" Find text in table ")
         self.findLayout.addWidget(self.findText, stretch=100, alignment=Qt.AlignmentFlag.AlignTop|Qt.AlignmentFlag.AlignRight)
+        self.findText.textChanged.connect(self.find)
         self.findButton = QPushButton(" Find... ")
         self.findLayout.addWidget(self.findButton, stretch=10, alignment=Qt.AlignmentFlag.AlignTop|Qt.AlignmentFlag.AlignRight)
         self.findButton.clicked.connect(self.find)
@@ -80,7 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def start_request(self):
               
-        url = QUrl("https://python1c.ru/catalogs/api?format=json")
+        url = QUrl("https://proverbs.python1c.ru/catalogs/api?format=json")
         request = QNetworkRequest(url)
         
         # Отправляем GET запрос
@@ -93,12 +94,14 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.reply.error() == QNetworkReply.NetworkError.NoError:
             # Читаем данные
             str_catalog = self.reply.readAll().data().decode("utf-8")
-            self.table.setModel(TableModel(str_catalog))
+            self.catalogs_all = json.loads(str_catalog)
+            self.table.setModel(TableModel(self.catalogs_all))
         else:
             # Обработка ошибки
             error_str = self.reply.errorString()
             str_catalog = '[{"id":49,"name":"Богу молись, а к берегу гребись.","title":"(Пословица означает, "'+error_str+'"}]'
-            self.table.setModel(TableModel(str_catalog))
+            self.catalogs_all = json.loads(str_catalog)
+            self.table.setModel(TableModel(self.catalogs_all))
             
         self.reply.deleteLater()
      
@@ -120,14 +123,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # @Slot()
     def find(self):
-        findString = self.findText.text()
-        dlg = QMessageBox(self)
-        dlg.setWindowTitle(self.tr("Пословицы"))
-        dlg.setText(self.tr("text: '"+findString+"' будет найден"))
-        dlg.exec()
-
-            
-
+        strFind = self.findText.text().upper()
+        catalogs = list(filter(lambda item: strFind in item['name'].upper() or strFind in item['title'].upper() , self.catalogs_all))
+        self.table.catalogs = catalogs
+        self.table.setModel(TableModel(catalogs))
+       
 app = QtWidgets.QApplication(sys.argv)
 window = MainWindow()
 window.setMinimumWidth(1024)
