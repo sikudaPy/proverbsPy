@@ -47,16 +47,25 @@ class TableModel(QtCore.QAbstractTableModel):
                 return self.catalogs[index.row()]["title"]
 
     def rowCount(self, index):
-        return len(self.catalogs)
+        if self.catalogs:
+            return len(self.catalogs)
+        else:
+            return 0
 
     def columnCount(self, index):
-        return 2 #len(self._data)
+        return 2 
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Пословицы")
-        self._file_menu = self.menuBar().addMenu("&File")
+        file_menu = self.menuBar().addMenu("&File")
+        self.exit_action = file_menu.addAction("E&xit")
+        self.exit_action.setShortcut("Ctrl+Q")
+        self.exit_action.triggered.connect(self.close)
+        help_menu = self.menuBar().addMenu("&Help")
+        about_qt_action = help_menu.addAction("About Qt", qApp.aboutQt)
+
         self.catalogs_all = []
         self.table = QtWidgets.QTableView()
 
@@ -72,10 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.findText.setFixedWidth(800)  
         self.findLayout.addWidget(self.findText, stretch=10, alignment=Qt.AlignmentFlag.AlignTop|Qt.AlignmentFlag.AlignRight)
         self.findText.textChanged.connect(self.find)
-        #self.findButton = QPushButton(" Find... ")
-        #self.findLayout.addWidget(self.findButton, stretch=10, alignment=Qt.AlignmentFlag.AlignTop|Qt.AlignmentFlag.AlignRight)
-        #self.findButton.clicked.connect(self.find)
-
+        
         self.verticalLayout.addWidget(self.table)
         self.setCentralWidget(self.centralwidget)
 
@@ -109,7 +115,6 @@ class MainWindow(QtWidgets.QMainWindow):
             
         self.reply.deleteLater()
      
-        #self.setCentralWidget(self.table)
         self.table.setAlternatingRowColors(True)
         self.table.resizeColumnToContents(0)
         self.table.setColumnWidth(1, 600)
