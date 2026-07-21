@@ -139,7 +139,9 @@ class MainWindow(QtWidgets.QMainWindow):
        
 app = QtWidgets.QApplication(sys.argv)
 window = MainWindow()
-window.setMinimumWidth(1024)
-window.setMinimumHeight(768)
+
+window.setMinimumWidth(800)
+window.setMinimumHeight(600)
+window.resize(1024, 768)
 window.show()
 app.exec()    
